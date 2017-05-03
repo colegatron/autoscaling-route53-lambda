@@ -4,18 +4,33 @@ The main function listens for TERMINATE and LAUNCH events, and DELETEs and UPSER
 
 
 ## Usage
-Create an Autoscaling Group Tag called 'Route53' with values in any of these formats:
-*   - Tag Name:  'Route53' (defined in tagName variable)
-*   - Tag value:  <four options>
-*       1) 'HostedZoneId:record-name'                       Ex. Z1473BHDWSM6GV:www.example.com              (assumes CNAME type and TTL of 1)
-*       2) 'HostedZoneId:type:record-name'                  Ex. Z1473BHDWSM6GV:CNAME:www.example.com        (assumes TTL of 1)'
-*       3) 'HostedZoneId:type:record-name:ttl'              Ex. Z1473BHDWSM6GV:CNAME:www.example.com:30)'
-*       4) <empty string> or value of 'none' is ignored
+Create an Autoscaling Group Tag called `Route53` with values in any of the formats below. 
+
+**Tag Name**:  `Route53` (defined in TAG_NAME variable)
+**Tag value formats**:  
+### **Basics and optional parameters**
+  * `HostedZoneId:record-name`            Ex. `Z0987654321123:www.example.com`          (assumes CNAME type and TTL of 1)
+  * `HostedZoneId:type:record-name`       Ex.`Z0987654321123:CNAME:www.example.com`    (assumes TTL of 1)
+  * `HostedZoneId:type:record-name:ttl`   Ex. `Z0987654321123:CNAME:www.example.com:30`
+
+### **Prefix-notation**
+  * `HostedZoneId:type:record-name:ttl`   Ex. `Z0987654321123:CNAME:www.#:30`
+  * (Example of notation for dns record name prefix. `#` will be replaced by the zone name. This is assumed in Simple Multi-zone format.)
+    * `www.#`  -- will be replaced with --> `www.example.com`
+
+### **Simple Multiple zone format**
+  * `HostedZoneId1,HostedZoneId2,...:prefix-name`    Ex. `Z0987654321123,Z1234567890123:www.:30`
+  * (All zones use the same prefix-name and prefix-name is added to zone name)
+
+### **JSON Multiple zone format**
+  * `[<quoted string in format #1-3 above>, ... ]`   Ex. `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]`
+
+  **NOTE:** A tag value of <empty string> or `none` is ignored.
 
 
 ## ZIP it up
 Create ZIP file with `zip ../autoscaling-route53.js index.js async`
-
+### 
 ## Install (for lack of better words)
 AWS makes this relatively easy for you, but you still have to jump some hoops. Let's use the Console for this, as it is easiest. 
 
