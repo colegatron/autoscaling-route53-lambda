@@ -12,25 +12,25 @@ Create an Autoscaling Group Tag called `Route53` with values in any of the forma
 
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
-  | `HostedZoneId:record-name` | `Z0987654321123:www.example.com` | Assumes CNAME type and TTL of 1 |
-  | `HostedZoneId:type:record-name` | `Z0987654321123:CNAME:www.example.com` | Assumes TTL of 1 |
-  | `HostedZoneId:type:record-name:ttl` | `Z0987654321123:CNAME:www.example.com:30` |   |
+  | HostedZoneId:record-name | `Z0987654321123:www.example.com` | Assumes CNAME type and TTL of 1 |
+  | HostedZoneId:type:record-name | `Z0987654321123:CNAME:www.example.com` | Assumes TTL of 1 |
+  | HostedZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.example.com:30` |   |
 
 ### **Prefix-notation**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
-  | `HostedZoneId:type:record-name:ttl` | `Z0987654321123:CNAME:www.#:30` | `#` will be replaced by the zone name, ex: `www.#`  -- will be replaced with --> `www.example.com` |
+  | ZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.#:30` | `#` will be replaced by the zone name, ex: `www.#`  -- will be replaced with --> `www.example.com` |
   
 ### **Simple Multiple zone format**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
-  | `HostedZoneId1,HostedZoneId2,...:prefix-name` | `Z0987654321123,Z1234567890123:www.:30` | All zones use the same prefix-name and prefix-name is added to zone name |
+  | ZoneId1,ZoneId2,...:prefix-name | `Z0987654321123,Z1234567890123:www.:30` | All zones use the same prefix-name and prefix-name is added to zone name |
   
 
 ### **JSON Multiple zone format**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
-  | `[<valid string 1>, <valid string 2>, ... ]` | `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]` |  JSON array of strings which are in a valid format above |
+  | [<valid string 1>, <valid string 2>, ...] | `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]` |  JSON array of strings which are in a valid format above |
 
   **NOTE:** A tag value of <empty string> or `none` is ignored.
 
