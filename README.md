@@ -6,9 +6,10 @@ The main function listens for TERMINATE and LAUNCH events, and DELETEs and UPSER
 ## Usage
 Create an Autoscaling Group Tag called `Route53` with values in any of the formats below. 
 
-**Tag Name**:  `Route53` (defined in TAG_NAME variable)
-**Tag value formats**:  
-### **Basics and optional parameters**
+#### **Tag Name**:  `Route53` (defined in TAG_NAME variable)
+
+#### **Tag value formats**:  
+##### **Basics and optional parameters**
 
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
@@ -16,23 +17,23 @@ Create an Autoscaling Group Tag called `Route53` with values in any of the forma
   | HostedZoneId:type:record-name | `Z0987654321123:CNAME:www.example.com` | Assumes TTL of 1 |
   | HostedZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.example.com:30` |   |
 
-### **Prefix-notation**
+##### **Prefix-notation**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
   | ZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.#:30` | `#` will be replaced by the zone name, ex: `www.#`  -- will be replaced with --> `www.example.com` |
   
-### **Simple Multiple zone format**
+##### **Simple Multiple zone format**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
   | ZoneId1,ZoneId2,...:prefix-name | `Z0987654321123,Z1234567890123:www.:30` | All zones use the same prefix-name and prefix-name is added to zone name |
   
 
-### **JSON Multiple zone format**
+##### **JSON Multiple zone format**
   | Format        | Example           | Notes  |
   | ------------- |-------------| -----|
   | [<valid string 1>, <valid string 2>, ...] | `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]` |  JSON array of strings which are in a valid format above |
 
-  **NOTE:** A tag value of <empty string> or `none` is ignored.
+  **NOTE:** A tag value of `<empty string>` or `none` is ignored.
 
 
 ## ZIP it up
