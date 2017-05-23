@@ -1,35 +1,44 @@
 /*******************************************************************************  
-* Lambda function which reacts to SNS topics about Autoscaling events.
-* Assumptions:
-* - SNS topic for autoscaling
-* - Topcic events of autoscaling:EC2_INSTANCE_LAUNCH and autoscaling:EC2_INSTANCE_TERMINATE (other events ignored)
-* - Autoscaling object has these tags: 
-* - Tag Name:  'Route53' (defined in TAG_NAME variable)
-* - Tag value:  <several options>
-*   (basics and optional parameters)
-*   1) 'HostedZoneId:record-name'                       Ex. Z0987654321123:www.example.com              (assumes CNAME type and TTL of 1)
-*   2) 'HostedZoneId:type:record-name'                  Ex. Z0987654321123:CNAME:www.example.com        (assumes TTL of 1)
-*   3) 'HostedZoneId:type:record-name:ttl'              Ex. Z0987654321123:CNAME:www.example.com:30
-*   (prefix-notation)
-*   4) 'HostedZoneId:type:record-name:ttl'              Ex. Z0987654321123:CNAME:www.#:30               (example of notation for dns record name prefix. the '#' will be replaced by the DNS zone name)
-*                                                           www.#  -- will be replaced with --> www.example.com
-*   (multiple zone format - simple)
-*   4) 'HostedZoneId1,HostedZoneId2,...:prefix-name'    Ex. Z0987654321123,Z1234567890123:www.          (All zones use the same prefix-name. prefix-name is a prefix added to the domain name)
-*                                                           Z0987654321123,Z1234567890123:A:www.
-*                                                           Z0987654321123,Z1234567890123:A:www.:30
-*   (multiple zone format - json string array)
-*   5) '[<quoted string in format #1-3 above>, ... ]'   Ex. ["Z0987654321123:CNAME:www.example.com:30", "Z1234567890123:CNAME:www.example.com"]
+ Lambda function which reacts to SNS topics about Autoscaling events.
+ Assumptions:
+ - SNS topic for autoscaling
+ - Topcic events of autoscaling:EC2_INSTANCE_LAUNCH and autoscaling:EC2_INSTANCE_TERMINATE (other events ignored)
+ - Autoscaling object has these tags of name TAG_NAME and a valid value as documented
 
-*   A tag value of <empty string> or value of 'none' is ignored.
- 
-["ZNFHAOMT0WZ40:A:*.foo.viriondb.com:30","Z715SAUHQX62C:A:*.bar.#:30"]
+************ Begin README.md excerpt
 
-*    By Peter Jones https://github.com/PeterRJones/
-*    Heavily influenced and inspired by: https://github.com/30mhz/autoscaling-route53-lambda
-*
-* TODO:
-* - support latency routing policies http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html?console_help=true#routing-policy-latency
-*
+## Usage
+Create an Autoscaling Group Tag called `Route53` with values in any of the formats below. 
+
+**Tag Name**:  `Route53` (defined in TAG_NAME variable)
+**Tag value formats**:  
+### **Basics and optional parameters**
+  * `HostedZoneId:record-name`            Ex. `Z0987654321123:www.example.com`          (assumes CNAME type and TTL of 1)
+  * `HostedZoneId:type:record-name`       Ex. `Z0987654321123:CNAME:www.example.com`    (assumes TTL of 1)
+  * `HostedZoneId:type:record-name:ttl`   Ex. `Z0987654321123:CNAME:www.example.com:30`
+
+### **Prefix-notation**
+  * `HostedZoneId:type:record-name:ttl`   Ex. `Z0987654321123:CNAME:www.#:30`
+  * (Example of notation for dns record name prefix. `#` will be replaced by the zone name. This is assumed in Simple Multi-zone format.)
+    * `www.#`  -- will be replaced with --> `www.example.com`
+
+### **Simple Multiple zone format**
+  * `HostedZoneId1,HostedZoneId2,...:prefix-name`    Ex. `Z0987654321123,Z1234567890123:www.:30`
+  * (All zones use the same prefix-name and prefix-name is added to zone name)
+
+### **JSON Multiple zone format**
+  * `[<quoted string in format #1-3 above>, ... ]`   Ex. `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]`
+
+  **NOTE:** A tag value of <empty string> or `none` is ignored.
+
+************ End README.md excerpt
+
+    By Peter Jones (PeterRJones) https://github.com/PeterRJones/
+    Heavily influenced and inspired by Jurg van Vliet (truthtrap): https://github.com/30mhz/autoscaling-route53-lambda
+
+ TODO:
+ - support latency routing policies http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html?console_help=true#routing-policy-latency
+
 ********************************************************************************/
 "use strict";
 
