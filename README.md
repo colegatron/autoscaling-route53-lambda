@@ -4,18 +4,41 @@ The main function listens for TERMINATE and LAUNCH events, and DELETEs and UPSER
 
 
 ## Usage
-Create an Autoscaling Group Tag called 'Route53' with values in any of these formats:
-*   - Tag Name:  'Route53' (defined in tagName variable)
-*   - Tag value:  <four options>
-*       1) 'HostedZoneId:record-name'                       Ex. Z1473BHDWSM6GV:www.example.com              (assumes CNAME type and TTL of 1)
-*       2) 'HostedZoneId:type:record-name'                  Ex. Z1473BHDWSM6GV:CNAME:www.example.com        (assumes TTL of 1)'
-*       3) 'HostedZoneId:type:record-name:ttl'              Ex. Z1473BHDWSM6GV:CNAME:www.example.com:30)'
-*       4) <empty string> or value of 'none' is ignored
+Create an Autoscaling Group Tag called `Route53` with values in any of the formats below. 
+
+#### **Tag Name**:  `Route53` (defined in TAG_NAME variable)
+
+#### **Tag value formats**:  
+##### **Basics and optional parameters**
+
+  | Format        | Example           | Notes  |
+  | ------------- |-------------| -----|
+  | HostedZoneId:record-name | `Z0987654321123:www.example.com` | Assumes CNAME type and TTL of 1 |
+  | HostedZoneId:type:record-name | `Z0987654321123:CNAME:www.example.com` | Assumes TTL of 1 |
+  | HostedZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.example.com:30` |   |
+
+##### **Prefix-notation**
+  | Format        | Example           | Notes  |
+  | ------------- |-------------| -----|
+  | ZoneId:type:record-name:ttl | `Z0987654321123:CNAME:www.#:30` | `#` will be replaced by the zone name, ex: `www.#`  -- will be replaced with --> `www.example.com` |
+  
+##### **Simple Multiple zone format**
+  | Format        | Example           | Notes  |
+  | ------------- |-------------| -----|
+  | ZoneId1,ZoneId2,...:prefix-name | `Z0987654321123,Z1234567890123:www.:30` | All zones use the same prefix-name and prefix-name is added to zone name |
+  
+
+##### **JSON Multiple zone format**
+  | Format        | Example           | Notes  |
+  | ------------- |-------------| -----|
+  | [<valid string 1>, <valid string 2>, ...] | `["Z0987654321123:CNAME:www.example.com:30","Z1234567890123:A:www.#"]` |  JSON array of strings which are in a valid format above |
+
+  **NOTE:** A tag value of `<empty string>` or `none` is ignored.
 
 
 ## ZIP it up
 Create ZIP file with `zip ../autoscaling-route53.js index.js async`
-
+### 
 ## Install (for lack of better words)
 AWS makes this relatively easy for you, but you still have to jump some hoops. Let's use the Console for this, as it is easiest. 
 
